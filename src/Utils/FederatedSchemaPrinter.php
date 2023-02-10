@@ -283,12 +283,19 @@ class FederatedSchemaPrinter extends SchemaPrinter
         $implementedInterfaces = static::printImplementedInterfaces($type);
         $extends = FederatedSchema::isReservedRootType($type->name) ? 'extend ' : '';
 
+        $directives = [''];
+        if (array_key_exists(DirectiveEnum::SHAREABLE, $type->config) && $type->config[DirectiveEnum::SHAREABLE]) {
+            $directives[] = '@shareable';
+        }
+        $directives = implode(' ', $directives);
+
         return static::printDescription($options, $type) .
             sprintf(
-                "%stype %s%s {\n%s\n}",
+                "%stype %s%s%s {\n%s\n}",
                 $extends,
                 $type->name,
                 $implementedInterfaces,
+                $directives,
                 static::printFields($options, $type)
             );
     }
