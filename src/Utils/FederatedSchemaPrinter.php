@@ -168,7 +168,7 @@ class FederatedSchemaPrinter extends SchemaPrinter
             "\n",
             array_map(
                 static function (FieldDefinition $f, $i) use ($options) {
-                    return static::printDescription($options, $f, '  ', !$i) .
+                    return ' ' . trim(static::printDescription($options, $f, '  ', !$i) .
                         '  ' .
                         $f->name .
                         static::printArgs($options, $f->args, '  ') .
@@ -176,7 +176,8 @@ class FederatedSchemaPrinter extends SchemaPrinter
                         (string) $f->getType() .
                         static::printDeprecated($f) .
                         ' ' .
-                        static::printFieldFederatedDirectives($f);
+                        static::printFieldFederatedDirectives($f)
+                    );
                 },
                 $fields,
                 array_keys($fields)
@@ -204,7 +205,12 @@ class FederatedSchemaPrinter extends SchemaPrinter
             if (\array_key_exists('resolvable', $keyField)) {
                 $arguments[] = sprintf('%s: %s', KeyDirective::ARGUMENT_RESOLVABLE, $keyField['resolvable'] ? 'true' : 'false');
             }
-            $keyDirective .= sprintf(' @key(%s)', implode(', ', $arguments));
+            $keyDirective .= sprintf('@key(%s)', implode(', ', $arguments)) . PHP_EOL;
+        }
+        $keyDirective = trim($keyDirective);
+
+        if ($keyDirective !== '') {
+            $keyDirective = PHP_EOL . $keyDirective;
         }
 
         return $keyDirective;
