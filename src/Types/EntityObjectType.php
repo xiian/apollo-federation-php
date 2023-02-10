@@ -69,7 +69,7 @@ class EntityObjectType extends ObjectType
         );
 
         $this->keys = $config[self::FIELD_KEYS] ?? array_map(static function ($x): array {
-            return ['fields' => $x];
+            return ['fields' => $x, 'resolvable' => false];
         }, $config['keyFields']);
 
         if (isset($config[self::FIELD_REFERENCE_RESOLVER])) {
